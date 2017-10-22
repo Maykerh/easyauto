@@ -23,7 +23,16 @@ module.exports = {
 	resolve: {
 		root: __dirname,
 		alias: {
-			applicationStyles: 'app/styles/app.scss'
+			applicationStyles: 'app/styles/app.scss',
+			Main: 'app/components/Main.jsx',
+			Menu: 'app/components/Menu.jsx',
+			MenuItem: 'app/components/MenuItem.jsx',
+			UserCard: 'app/components/UserCard.jsx',
+			SideBar: 'app/components/SideBar.jsx',
+			TopBar: 'app/components/TopBar.jsx',
+			Table: 'app/components/Table.jsx',
+			TableLine: 'app/components/TableLine.jsx',
+			TableControls: 'app/components/TableControls.jsx'
 		},
 		extensions: [ '', '.js', '.jsx' ]
 	},
