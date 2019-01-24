@@ -3,7 +3,8 @@ var React = require('react');
 var style = {
 	default: {
 		padding: '5px 10px 5px 10px',
-		cursor: 'pointer'
+		cursor: 'pointer',
+		color: '#FFF'
 	},
 	active: {
 		backgroundColor: '#2089c9',

@@ -1,0 +1,23 @@
+.standard-form {
+	div {
+		width: 100%;
+		margin-bottom: 10px;
+
+		div {
+			margin-right: 10px;
+
+			&last-child {
+				margin-right: 0px;
+			}
+		}
+	}
+}
+
+.show-inline {
+	display: flex;
+	flex-direction: row
+}
+
+.margin-bottom {
+	margin-bottom: 10px;
+}

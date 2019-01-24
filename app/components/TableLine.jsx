@@ -55,7 +55,7 @@ var TableLine = React.createClass({
 		});
 	},
 
-	addSelecionCell: function() {
+	addSelectionCell: function() {
 		var {data} = this.props;
 
 		return (
@@ -73,19 +73,18 @@ var TableLine = React.createClass({
 		var cellsList = [];
 		var {data} = this.props;
 
-		cellsList.push(this.addSelecionCell());
+		cellsList.push(this.addSelectionCell());
 
-		data.columns.map((cellText) => {
-			cellsList.push(this.renderCell(cellText));
+		data.columns.map((cellText, index) => {
+			cellsList.push(this.renderCell(cellText, index));
 		});
 
 		return cellsList;
 	},
 
-	renderCell: function(cellText) {
-
+	renderCell: function(cellText, key) {
 		return (
-			<div key={cellText} style={style.cell}>
+			<div key={key} style={style.cell}>
 			    {cellText}
 		    </div>
 		);
@@ -96,13 +95,13 @@ var TableLine = React.createClass({
 
 		var rowStyle = Object.assign(
 			{},
-			data.number % 2 > 0 ? style.row : style.row2,
+			data.index % 2 > 0 ? style.row : style.row2,
 			this.state.hover ? style.hover : null
 		);
 
 		return (
 			<div 
-				key={data.number}
+				key={data.index}
 				onMouseOver={this.onMouseOver}
 				onMouseOut={this.onMouseOut}
 				style={rowStyle}>

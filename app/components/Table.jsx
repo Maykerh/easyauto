@@ -1,6 +1,23 @@
+/********************************************************************************************
+ *	Valores da tabela devem ser passados no formato:										* 
+ *																							*
+ *	var headers = [																			*
+ *		"Column1",																			*
+ *		"Column2",																			*
+ *		"Column3"																			*
+ * 	];																						*
+ *																							*
+ *	var lines = [																			*
+ *		{index: '1', id: '1', columns: ['column1-data', 'column2-data', 'column3-data']},	*
+ *		{index: '2', id: '2', columns: ['column1-data', 'column2-data', 'column3-data']},	*
+ *	];																						*
+ *																							*
+ ********************************************************************************************/
+
 var React = require('react');
 var TableLine = require('TableLine');
 var TableControls = require('TableControls');
+var TablePagination = require('TablePagination');
 
 var style = {
 	wrapper: {
@@ -9,8 +26,8 @@ var style = {
   		backgroundColor: '#FFF'
 	},
 	table: {
-		margin: '10px',
-		width: 'calc(100% - 20px)',
+		margin: '7px',
+		width: 'calc(100% - 14px)',
 		boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
 		border: '1px solid #9e9e9e',
 		borderRadius: '5px',
@@ -28,52 +45,18 @@ var style = {
 	}
 };
 
-var lines = [
-	{number: '1', id: '1', columns: ['Dashboard', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '2', id: '2', columns: ['Compras', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '3', id: '3', columns: ['Vendas', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '4', id: '4', columns: ['Veículos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '5', id: '5', columns: ['Produtos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '4', id: '4', columns: ['Veículos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '5', id: '5', columns: ['Produtos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '4', id: '4', columns: ['Veículos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '5', id: '5', columns: ['Produtos', 'aaaa', 'bbbbb', 'ccccc']},
-	{number: '6', id: '6', columns: ['Serviços', 'aaaa', 'bbbbb', 'ccccc']}
-];
-
 var Table = React.createClass({
 
-	getInitialState: function () {
-		return {
-			selectedIds: []
-		};
-	},
-
-	renderHeader: function() {
-
-		return (
-			<div style={style.header}>
-				<div style={style.cell}>
-	        		
-	      		</div>
-				<div style={style.cell}>
-	        		{"Name"}
-	      		</div>
-	      		<div style={style.cell}>
-	        		{"Age"}
-	      		</div>
-	      		<div style={style.cell}>
-	        		{"Occupation"}
-	      		</div>
-	      		<div style={style.cell}>
-	        		{"Location"}
-	      		</div>
-	    	</div>
-		);
+	propTypes: {
+		headers: React.PropTypes.array,
+		data: React.PropTypes.array,
+		onNew: React.PropTypes.func,
+		onDelete: React.PropTypes.func,
+		onEdit: React.PropTypes.func
 	},
 
 	onControlClick: function(action) {
-		var selectedIds = this.state.selectedIds;
+		var selectedIds = this.props.selectedIds;
 
 		switch (action) {
 			case 'new':
@@ -89,8 +72,8 @@ var Table = React.createClass({
 	},
 
 	onLineCLick: function(id, checked) {
-		var {selectedIds} = this.state;
-
+		var {selectedIds} = this.props;
+		
 		if (checked)
 			selectedIds.push(id);
 		else {
@@ -99,23 +82,48 @@ var Table = React.createClass({
 			selectedIds.splice(index, 1);
 		}
 
-		this.setState({
-			selectedIds: selectedIds
+		this.props.onSelect(selectedIds);
+	},
+
+	renderHeaders: function() {
+		var {headers} = this.props;
+		var headersList = [];
+
+		headers.map((header) => {
+			headersList.push(this.renderHeader(header));
 		});
+
+		return (
+			<div style={style.header}>
+				<div style={style.cell}>
+	        		
+	      		</div>
+				{headersList}
+	    	</div>
+		);
+	},
+
+	renderHeader: function(header) {
+
+		return (
+			<div style={style.cell}>
+        		{header}
+      		</div>
+		);
 	},
 
 	renderLines: function() {
+		var {data} = this.props;
 		var linesList = [];
 
-		lines.map((lineData) => {
+		data.map((lineData) => {
 			linesList.push(this.renderLine(lineData));
 		});
 
 		return linesList; 
 	},
 
-	renderLine: function(lineData) {
-
+	renderLine: function(lineData) {		
 		return (
 			<TableLine
 				onClick={this.onLineCLick} 
@@ -125,14 +133,26 @@ var Table = React.createClass({
 	},
 
 	render: function () {
+		var {selectedIds} = this.props;
+		var controlsToDisable = [];
+
+		if (!selectedIds || selectedIds.length < 1)
+			controlsToDisable.push('edit', 'delete');
+
+		if (selectedIds && selectedIds.length > 1)
+			controlsToDisable.push('edit');
 
 		return (
 			<div style={style.wrapper}>
-				<TableControls onClick={this.onControlClick}/>
+				<TableControls
+					disable={controlsToDisable}
+					onClick={this.onControlClick}
+				/>
 			  	<div style={style.table}>
-			    	{this.renderHeader()}
+			    	{this.renderHeaders()}
 			    	{this.renderLines()}
 				</div>
+				<TablePagination/>
 			</div>
 		);
 	}
